@@ -7,8 +7,14 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+app.set('view engine', 'ejs');
 app.get('/', (req, res) => {
   res.send("Hello!");
+});
+
+app.get('/urls', (req, res) => {
+  let templateVars = { urls : urlDatabase };
+  res.render('urls-index', templateVars);
 });
 
 app.get('/urls.json', (req, res) => {

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<style>
+  td {
+    border: 1px dashed blue;
+    padding: 10px;
+    margin: 0;
+  }
+</style>
+
+<head>
+  <title>TinyApp</title>
+</head>
+
+<body>
+  <table>
+    <tbody>
+
+      <% for (let el in urls) { %>
+          <tr>
+            <td><%= el %></td>
+            <td><%= urls[el] %></td>
+          </tr>
+        <% } %>
+    </tbody>
+  </table>
+</body>
