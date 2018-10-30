@@ -13,7 +13,7 @@ const urlDatabase = {
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.get('/urls/new', (req, res) => {
+app.get('/', (req, res) => {
   res.render('urls-new');
 });
 
