@@ -1,5 +1,7 @@
 const express = require('express');
 const app = express();
+const bodyParser = require("body-parser");
+const shortener = require('./shortener');
 const PORT = 3030;
 
 const urlDatabase = {
@@ -8,6 +10,11 @@ const urlDatabase = {
 };
 
 app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.get('/urls/new', (req, res) => {
+  res.render('urls-new');
+});
 
 app.get('/urls/:id', (req, res) => {
   let templateVars = {
@@ -34,6 +41,11 @@ app.get('/urls.json', (req, res) => {
 
 app.get('/hello', (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
+});
+
+app.post('/urls', (req, res) => {
+  console.log(req.body);
+  res.send(`Ok. Short Url: ${shortener()}`);
 });
 
 app.listen(PORT, () => {
