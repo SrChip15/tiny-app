@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
 const shortener = require('./shortener');
+const finder = require('./finder');
 const PORT = 3030;
 
 const urlDatabase = {
@@ -14,6 +15,18 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/urls/new', (req, res) => {
   res.render('urls-new');
+});
+
+app.get('/u/:shortUrl', (req, res) => {
+  if (req.params.shortUrl) {
+    // redirect only when a non-empty short url is supplied
+    let longUrl = finder.longUrl(req.params.shortUrl, urlDatabase);
+
+    if (longUrl) {
+      //  redirect only when short url exists
+      res.redirect(301, longUrl);
+    }
+  }
 });
 
 app.get('/urls/:id', (req, res) => {
