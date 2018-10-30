@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+
+<head>
+  <title>TinyApp</title>
+</head>
+
+<body>
+  <% for (let url in data) { %>
+    <% if (shortUrl == url) { %>
+      <p><%= data[url]  %></p>
+    <% } %>
+  <% } %>
+</body>
