@@ -55,10 +55,14 @@
           <%= urls[el] %>
         </td>
         <td>
+            <form id="form-edit" method="POST" action="/urls/<%= el %>">
+              <input id="edit" type="submit" value="Edit">
+            </form>
+          </td>
+        <td>
           <form id="form-delete" method="POST" action="/urls/<%= el %>/delete">
             <input id="delete" type="submit" value="Delete">
           </form>
-
         </td>
       </tr>
       <% } %>

@@ -21,18 +21,33 @@ app.get('/login', (req, res) => {
   res.render('urls-login');
 });
 
-// prints the URL database as a html table
+// home page request
 app.get('/urls', (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render('urls-home', templateVars);
 });
 
-// accept user supplied long URL and shorten & write to database
+// post user supplied long URL & redirect to home page
 app.post('/urls', (req, res) => {
- let key  = shortener();
- urlDatabase[key] = req.body.longURL;
- console.log(urlDatabase);
- res.redirect('/urls');
+  let key  = shortener();
+  urlDatabase[key] = req.body.longURL;
+  // console.log(urlDatabase);
+  res.redirect('/urls');
+});
+
+app.post('/urls/:id', (req, res) => {
+  let url = finder.longUrl(req.params.id, urlDatabase);
+  console.log(`${req.params.id} -> ${url}`);
+  let updateTemplateVars = {
+    shortUrl: req.params.id,
+    longUrl: url
+  };
+  res.render('urls-update', updateTemplateVars);
+});
+
+app.post('/urls/:id/update', (req, res) => {
+  urlDatabase[req.params.id] = req.body.longURL;
+  res.redirect('/urls');
 });
 
 app.post('/urls/:id/delete', (req, res) => {
