@@ -15,7 +15,14 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 // app.use(cookieParser());
 
-app.get('/', (req, res) => {
+// login submit button takes this route
+app.get('/login', (req, res) => {
+  res.cookie('username', req.body.username);
+  res.render('urls-login');
+});
+
+// main page - enter long url
+app.get('/urls/new', (req, res) => {
   res.render('urls-new');
 });
 
@@ -47,6 +54,12 @@ app.get('/urls', (req, res) => {
   res.render('urls-index', templateVars);
 });
 
+// when user does not properly pass in the res path
+// redirect to the login page
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
  // accept user supplied long URL and shorten & write to database
 app.post('/urls', (req, res) => {
   let key  = shortener();
@@ -55,6 +68,7 @@ app.post('/urls', (req, res) => {
   res.send(`Success!
    New entry: ${key}: ${req.body.longURL}`);
 });
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
@@ -75,8 +89,4 @@ app.get('/urls.json', (req, res) => {
 app.get('/hello', (req, res) => {
   res.send("<html><body>Hello <b>World</b></body></html>\n");
 });
-
-/* app.post('./login', (req, res) => {
-  res.cookie('username', req.body);
-});
- */
+*/
