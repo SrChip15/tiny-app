@@ -21,9 +21,19 @@ app.get('/login', (req, res) => {
   res.render('urls-login');
 });
 
-// main page - enter long url
-app.get('/urls/new', (req, res) => {
-  res.render('urls-new');
+// prints the URL database as a html table
+app.get('/urls', (req, res) => {
+  let templateVars = { urls: urlDatabase };
+  res.render('urls-home', templateVars);
+});
+
+// accept user supplied long URL and shorten & write to database
+app.post('/urls', (req, res) => {
+ let key  = shortener();
+ urlDatabase[key] = req.body.longURL;
+ console.log(urlDatabase);
+ res.send(`Success!New entry: ${key}: ${req.body.longURL}`);
+ res.redirect('/urls');
 });
 
 // redirects short URL to its corresponding long url
@@ -39,40 +49,30 @@ app.get('/u/:shortUrl', (req, res) => {
   }
 });
 
-// append short URL to print the long URL on screen
-app.get('/urls/:id', (req, res) => {
-  let templateVars = {
-    shortUrl: req.params.id,
-    data: urlDatabase
-  };
-  res.render('urls-show', templateVars);
-});
-
-// prints the URL database as a html table
-app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase };
-  res.render('urls-index', templateVars);
-});
-
 // when user does not properly pass in the res path
 // redirect to the login page
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
 
- // accept user supplied long URL and shorten & write to database
-app.post('/urls', (req, res) => {
-  let key  = shortener();
-  urlDatabase[key] = req.body.longURL;
-  console.log(urlDatabase);
-  res.send(`Success!
-   New entry: ${key}: ${req.body.longURL}`);
-});
-
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
+/* // main page - enter long url
+app.get('/urls/new', (req, res) => {
+  res.render('urls-home');
+}); */
+
+/* // append short URL to print the long URL on screen
+app.get('/urls/:id', (req, res) => {
+  let templateVars = {
+    shortUrl: req.params.id,
+    data: urlDatabase
+  };
+  res.render('urls-show', templateVars);
+}); */
 
 /* EXAMPLE STUFF
 
