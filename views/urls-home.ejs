@@ -21,10 +21,38 @@
     font-weight: 500;
     letter-spacing: 1px;
   }
+
+  .test {
+    float: right;
+    margin-right: 20px;
+    margin-top: 10px;
+  }
+
+  #username {
+    display:inline-block;
+    width: 80%;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  #logout {
+    display: inline-block;
+    height: 10px;
+  }
+
 </style>
 
 <body>
   <% include partials/_header %>
+
+  <div class="test">
+    <h3 id="username">
+      <%= username %>
+    </h3>
+    <form method="POST" action="/logout">
+      <input id="logout" name="logout" type="submit" value="Logout" />
+    </form>
+  </div>
 
   <div id="form">
     <form action="/urls" method="POST">

@@ -5,8 +5,9 @@ const cookieParser = require('cookie-parser');
 const shortener = require('./shortener');
 const finder = require('./finder');
 const PORT = 3030;
+const COOKIE_NAME = 'username';
 
-const urlDatabase = {
+let urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
@@ -17,22 +18,39 @@ app.use(cookieParser());
 
 // login submit button takes this route
 app.get('/login', (req, res) => {
-  res.cookie('username', req.body.username);
   res.render('urls-login');
+});
+
+app.post('/login', (req, res) => {
+  res.cookie(COOKIE_NAME, req.body.username);
+  res.redirect('/urls');
 });
 
 // home page request
 app.get('/urls', (req, res) => {
-  let templateVars = { urls: urlDatabase };
+  let templateVars = {
+    username: req.cookies[COOKIE_NAME],
+    urls: urlDatabase
+  };
   res.render('urls-home', templateVars);
 });
 
 // post user supplied long URL & redirect to home page
 app.post('/urls', (req, res) => {
-  let key  = shortener();
-  urlDatabase[key] = req.body.longURL;
-  // console.log(urlDatabase);
+  if (req.body.longURL) {
+    let key  = shortener();
+    urlDatabase[key] = req.body.longURL;
+    // console.log(urlDatabase);
+  }
+
   res.redirect('/urls');
+
+});
+
+app.post('/logout', (req, res) => {
+  res.clearCookie(COOKIE_NAME);
+  urlDatabase = {}; // dump user data
+  res.redirect('/login');
 });
 
 app.post('/urls/:id', (req, res) => {
