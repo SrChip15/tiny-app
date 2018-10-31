@@ -16,6 +16,10 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
+app.get('/register', (req, res) => {
+  res.render('urls-register');
+});
+
 // login submit button takes this route
 app.get('/login', (req, res) => {
   res.render('urls-login');
