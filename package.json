@@ -2,8 +2,9 @@
   "name": "tiny-app",
   "version": "1.0.0",
   "description": "Url Shortener",
-  "main": "index.js",
+  "main": "express-server.js",
   "scripts": {
+    "start": "./node_modules/.bin/nodemon -L express_server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "SriNath",
@@ -13,5 +14,8 @@
     "cookie-parser": "^1.4.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.5"
   }
 }
