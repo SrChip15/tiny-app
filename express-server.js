@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
-// const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const shortener = require('./shortener');
 const finder = require('./finder');
 const PORT = 3030;
@@ -13,7 +13,7 @@ const urlDatabase = {
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
-// app.use(cookieParser());
+app.use(cookieParser());
 
 // login submit button takes this route
 app.get('/login', (req, res) => {
@@ -21,19 +21,39 @@ app.get('/login', (req, res) => {
   res.render('urls-login');
 });
 
-// prints the URL database as a html table
+// home page request
 app.get('/urls', (req, res) => {
   let templateVars = { urls: urlDatabase };
   res.render('urls-home', templateVars);
 });
 
-// accept user supplied long URL and shorten & write to database
+// post user supplied long URL & redirect to home page
 app.post('/urls', (req, res) => {
- let key  = shortener();
- urlDatabase[key] = req.body.longURL;
- console.log(urlDatabase);
- res.send(`Success!New entry: ${key}: ${req.body.longURL}`);
- res.redirect('/urls');
+  let key  = shortener();
+  urlDatabase[key] = req.body.longURL;
+  // console.log(urlDatabase);
+  res.redirect('/urls');
+});
+
+app.post('/urls/:id', (req, res) => {
+  let url = finder.longUrl(req.params.id, urlDatabase);
+  console.log(`${req.params.id} -> ${url}`);
+  let updateTemplateVars = {
+    shortUrl: req.params.id,
+    longUrl: url
+  };
+  res.render('urls-update', updateTemplateVars);
+});
+
+app.post('/urls/:id/update', (req, res) => {
+  urlDatabase[req.params.id] = req.body.longURL;
+  res.redirect('/urls');
+});
+
+app.post('/urls/:id/delete', (req, res) => {
+  // console.log(req.params.id);
+  delete urlDatabase[req.params.id];
+  res.redirect('/urls');
 });
 
 // redirects short URL to its corresponding long url

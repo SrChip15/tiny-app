@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en">
+  <% include ./partials/_header %>
+
+  <h3>Short Url: <%= shortUrl %></h3>
+  <form method="POST" action="/urls/<%= shortUrl %>/update">
+    <input name="longURL" type="text" value="<%= longUrl  %>" />
+    <input type="submit" value="Submit" />
+  </form>
+</html>

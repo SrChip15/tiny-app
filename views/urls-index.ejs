@@ -8,9 +8,31 @@
   }
 
   td {
-    border: 1px dashed blue;
-    padding: 10px;
+    border: 1px solid blue;
+    padding: 5px;
     margin: 0;
+  }
+
+  #form-delete {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+  }
+
+  #delete {
+    width: 100%;
+    padding: 20px;
+    height: 100%;
+    border: none;
+    background-color: cornsilk;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  #delete:hover {
+    color: white;
+    background-color: crimson;
+    transition: all 0.25s linear;
   }
 </style>
 
@@ -31,6 +53,16 @@
         </td>
         <td>
           <%= urls[el] %>
+        </td>
+        <td>
+            <form id="form-edit" method="POST" action="/urls/<%= el %>">
+              <input id="edit" type="submit" value="Edit">
+            </form>
+          </td>
+        <td>
+          <form id="form-delete" method="POST" action="/urls/<%= el %>/delete">
+            <input id="delete" type="submit" value="Delete">
+          </form>
         </td>
       </tr>
       <% } %>
