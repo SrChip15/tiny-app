@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const shortener = require('./shortener');
 const finder = require('./finder');
+const users = require('./models/users');
 const PORT = 3030;
 const COOKIE_NAME = 'username';
 
@@ -17,7 +18,20 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
 app.get('/register', (req, res) => {
-  res.render('urls-register');
+  if (req.cookies[COOKIE_NAME]) {
+    // already registered for session
+    res.redirect('/urls');
+  } else {
+    res.render('urls-register');
+  }
+});
+
+app.post('/register', (req, res) => {
+  let randomId = shortener();
+  users.add(randomId, req.body.email, req.body.password);
+  res.cookie(COOKIE_NAME, randomId);
+  console.log(users.getUsers);
+  res.redirect('/urls');
 });
 
 // login submit button takes this route
@@ -32,11 +46,15 @@ app.post('/login', (req, res) => {
 
 // home page request
 app.get('/urls', (req, res) => {
-  let templateVars = {
-    username: req.cookies[COOKIE_NAME],
-    urls: urlDatabase
-  };
-  res.render('urls-home', templateVars);
+  if (req.cookies[COOKIE_NAME]) {
+    let templateVars = {
+      username: req.cookies[COOKIE_NAME],
+      urls: urlDatabase
+    };
+    res.render('urls-home', templateVars);
+  } else {
+    res.redirect('/register');
+  }
 });
 
 // post user supplied long URL & redirect to home page
