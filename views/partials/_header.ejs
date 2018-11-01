@@ -46,6 +46,7 @@
     </div>
   </div>
 
+  <% if ( typeof username == 'undefined' ) { %>
   <div>
     <form method="POST" action="/login" style="margin: 150px;">
       <input type="email" name="email" placeholder="email">
@@ -53,7 +54,13 @@
       <input id="login" type="submit" value="Login">
     </form>
   </div>
-
+  <% } else { %>
+    <div class="test">
+      <form method="POST" action="/logout">
+        <input id="logout" name="logout" type="submit" value="Logout" />
+      </form>
+    </div>
+  <% } %>
 </header>
 
 </html>

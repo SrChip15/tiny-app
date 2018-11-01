@@ -5,9 +5,9 @@ const cookieParser = require('cookie-parser');
 const shortener = require('./shortener');
 const finder = require('./finder');
 const PORT = 3030;
-const COOKIE_NAME = 'user_id';
+const COOKIE_NAME = 'useremail';
 
-let urlDatabase = {
+const  urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
@@ -46,12 +46,16 @@ app.post('/register', (req, res) => {
 
 // login submit button takes this route
 app.get('/login', (req, res) => {
-  res.render('urls-home');
+  res.redirect('/urls');
 });
 
 app.post('/login', (req, res) => {
-  res.cookie(COOKIE_NAME, req.body.username);
-  res.redirect('/urls');
+  if (!req.body.email || !req.body.password) {
+    res.status(400).send("Email or Password field cannot be empty");
+  } else {
+    res.cookie(COOKIE_NAME, req.body.email);
+    res.redirect('/urls');
+  }
 });
 
 // home page request
@@ -77,7 +81,6 @@ app.post('/urls', (req, res) => {
 
 app.post('/logout', (req, res) => {
   res.clearCookie(COOKIE_NAME);
-  urlDatabase = {}; // dump user data
   res.redirect('/login');
 });
 
@@ -88,11 +91,12 @@ app.get('/urls/:id', (req, res) => {
   if (url) {
     // id exists
     let templateVars = {
+      username: req.cookies[COOKIE_NAME],
       shortUrl: req.params.id,
       longURL: url
     };
-
     res.render('urls-show', templateVars);
+
   } else {
     res.status(400).send("ID does not exist");
   }
