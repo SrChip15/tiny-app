@@ -43,26 +43,27 @@
 </style>
 
 <body>
+
+  <!-- if no template variables are passed assume that it is a login request  -->
+  <!-- in which case, just show header -->
+  <!-- else its an existing user login, show with BOTH header & URLs -->
   <% include partials/_header %>
 
-  <div class="test">
-    <h3 id="username">
-      <%= username %>
-    </h3>
-    <form method="POST" action="/logout">
-      <input id="logout" name="logout" type="submit" value="Logout" />
-    </form>
-  </div>
+  <% if (typeof username == 'undefined') { %>
+    <!-- display only header -->
+  <% } else { %>
 
-  <div id="form">
-    <form action="/urls" method="POST">
-      <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-      <input id="submit" type="submit" value="Submit">
-    </form>
-  </div>
+    <div id="form">
+      <form method="POST" action="/urls">
+        <label for="longURL">Enter a URL:</label>
+        <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
+        <input id="submit" type="submit" value="Submit">
+      </form>
+    </div>
 
-  <% include ./urls-index %>
+    <% include ./urls-index %>
+
+  <% } %>
 
 </body>
 
