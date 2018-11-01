@@ -6,15 +6,17 @@ const shortener = require('./shortener');
 const finder = require('./finder');
 const users = require('./models/users');
 const PORT = 3030;
-const COOKIE_NAME = 'useremail';
+const COOKIE_NAME = 'user_id';
 
-const  urlDatabase = {
+const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
 
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(cookieParser());
 
 app.get('/register', (req, res) => {
@@ -29,15 +31,15 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   if (!req.body.email || !req.body.password) {
     res.status(400).send("Email or Password field cannot be empty");
-  }
-
-  else if (users.isNew(req.body.password)) {
+  } else if (users.isNew(req.body.password)) {
     // already registered user, render
     res.status(400);
-    res.redirect('/login');
-  }
-
-  else {
+    let templateVars = {
+      username: req.cookies[COOKIE_NAME],
+      urls: urlDatabase
+    };
+    res.render('urls-home', templateVars);
+  } else {
     let randomId = shortener();
     users.add(randomId, req.body.email, req.body.password);
     res.cookie(COOKIE_NAME, randomId);
@@ -47,15 +49,18 @@ app.post('/register', (req, res) => {
 
 // login submit button takes this route
 app.get('/login', (req, res) => {
-  res.redirect('/urls');
+  res.render('urls-login');
 });
 
 app.post('/login', (req, res) => {
   if (!req.body.email || !req.body.password) {
     res.status(400).send("Email or Password field cannot be empty");
   } else {
-    res.cookie(COOKIE_NAME, req.body.email);
-    res.redirect('/urls');
+    // verify credentials
+    res.cookie(COOKIE_NAME, req.cookies[COOKIE_NAME]);
+    if (users.verify(req.body.email, req.body.password)) {
+      res.redirect('/urls');
+    }
   }
 });
 
@@ -63,7 +68,7 @@ app.post('/login', (req, res) => {
 app.get('/urls', (req, res) => {
   if (req.cookies[COOKIE_NAME]) {
     let templateVars = {
-      username: req.cookies[COOKIE_NAME],
+      user: users.findUser(req.cookies[COOKIE_NAME]),
       urls: urlDatabase
     };
     res.render('urls-home', templateVars);
@@ -75,7 +80,7 @@ app.get('/urls', (req, res) => {
 // post user supplied long URL & redirect to home page
 app.post('/urls', (req, res) => {
   if (req.body.longURL) {
-    let key  = shortener();
+    let key = shortener();
     urlDatabase[key] = req.body.longURL;
     // console.log(urlDatabase);
   }

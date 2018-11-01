@@ -28,40 +28,26 @@
     font-size: 1.5rem;
   }
 
-  #login {
-    width: 50px;
-    height: 25px;
-    border: none;
-    background-color: dodgerblue;
-    color: white;
-  }
-
 </style>
+
+<head>
+  <title>TinyApp</title>
+</head>
 
 <header>
   <div class="container">
     <div class="flexbox">
       <div id="head-left">Tiny App</div>
-      <!-- <div id="head-right">About</div> -->
     </div>
   </div>
 
-  <% if ( typeof username == 'undefined' ) { %>
-  <div>
-    <form method="POST" action="/login" style="margin: 150px;">
-      <input type="email" name="email" placeholder="email">
-      <input type="password" name="password" placeholder="password">
-      <input id="login" type="submit" value="Login">
+<% if (typeof username != 'undefined' ) { %>
+  <div class="test">
+    <form method="POST" action="/logout">
+      <input id="logout" name="logout" type="submit" value="Logout" />
     </form>
   </div>
-
-  <% } else if ( username ) { %>
-    <div class="test">
-      <form method="POST" action="/logout">
-        <input id="logout" name="logout" type="submit" value="Logout" />
-      </form>
-    </div>
-  <% } %>
+<% } %>
 
 </header>
 

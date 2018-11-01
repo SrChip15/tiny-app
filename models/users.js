@@ -1,17 +1,25 @@
 const users = {
-  "userRandomID": {
+  "1a97hg": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: "purple-monkey-dinosaur",
+    urls: {
+      "b2xVn2": "http://www.lighthouselabs.ca",
+      "9sm5xK": "http://www.google.com"
+    }
   },
- "user2RandomID": {
+  "3x4y5": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: "dishwasher-funk",
+    urls: {
+      "b2xVn2": "http://www.lighthouselabs.ca",
+      "9sm5xK": "http://www.google.com"
+    }
   }
 };
 
-const addUser = function(id, email, password) {
+const addUser = function (id, email, password) {
   users[id] = {
     'id': id,
     'email': email,
@@ -20,10 +28,19 @@ const addUser = function(id, email, password) {
   // console.log(users);
 };
 
-const checkIfExisting = function(password) {
+const addUrl = function (user, shortURL, longURL) {
+  for (let user in users) {
+    users[user].urls[shortURL] = longURL;
+    return true;
+  }
+
+  return false;
+};
+
+const checkIfExisting = function (email) {
   for (let user in users) {
     let person = users[user];
-    if (person.password === password) {
+    if (person.email === email) {
       return true;
     }
   }
@@ -31,8 +48,32 @@ const checkIfExisting = function(password) {
   return false;
 };
 
+const find = function (userID) {
+  for (let user in users) {
+    if (users[user].id === userID) {
+      return users[user];
+    }
+  }
+
+  return false;
+};
+
+const verifyCredentials = function (email, password) {
+  for (let user in users) {
+    if (users[user].email === email && users[user].password === password) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
 module.exports = {
   getUsers: users,
   add: addUser,
-  isNew: checkIfExisting
+  isNew: checkIfExisting,
+  findUser: find,
+  addUrl: addUrl,
+  verify: verifyCredentials
 };
