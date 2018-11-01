@@ -1,21 +1,14 @@
 const users = {
   "1a97hg": {
-    id: "userRandomID",
+    id: "1a97hg",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur",
-    urls: {
-      "b2xVn2": "http://www.lighthouselabs.ca",
-      "9sm5xK": "http://www.google.com"
-    }
+    password: "purple-monkey-dinosaur"
   },
+
   "3x4y5": {
-    id: "user2RandomID",
+    id: "3x4y5",
     email: "user2@example.com",
-    password: "dishwasher-funk",
-    urls: {
-      "b2xVn2": "http://www.lighthouselabs.ca",
-      "9sm5xK": "http://www.google.com"
-    }
+    password: "dishwasher-funk"
   }
 };
 
@@ -26,15 +19,6 @@ const addUser = function (id, email, password) {
     'password': password
   };
   // console.log(users);
-};
-
-const addUrl = function (user, shortURL, longURL) {
-  for (let user in users) {
-    users[user].urls[shortURL] = longURL;
-    return true;
-  }
-
-  return false;
 };
 
 const checkIfExisting = function (email) {
@@ -50,7 +34,7 @@ const checkIfExisting = function (email) {
 
 const find = function (userID) {
   for (let user in users) {
-    if (users[user].id === userID) {
+    if (user === userID) {
       return users[user];
     }
   }
@@ -61,12 +45,12 @@ const find = function (userID) {
 const verifyCredentials = function (email, password) {
   for (let user in users) {
     if (users[user].email === email && users[user].password === password) {
-      return true;
+      return users[user];
     }
   }
 
   return false;
-}
+};
 
 
 module.exports = {
@@ -74,6 +58,5 @@ module.exports = {
   add: addUser,
   isNew: checkIfExisting,
   findUser: find,
-  addUrl: addUrl,
   verify: verifyCredentials
 };

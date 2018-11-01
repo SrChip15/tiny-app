@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const shortener = require('./shortener');
 const finder = require('./finder');
 const users = require('./models/users');
+const urlDB = require('./models/urls');
 const PORT = 3030;
 const COOKIE_NAME = 'user_id';
 
@@ -57,8 +58,9 @@ app.post('/login', (req, res) => {
     res.status(400).send("Email or Password field cannot be empty");
   } else {
     // verify credentials
-    res.cookie(COOKIE_NAME, req.cookies[COOKIE_NAME]);
-    if (users.verify(req.body.email, req.body.password)) {
+    let user = users.verify(req.body.email, req.body.password);
+    if (user) {
+      res.cookie(COOKIE_NAME, user.id);
       res.redirect('/urls');
     }
   }
@@ -69,8 +71,9 @@ app.get('/urls', (req, res) => {
   if (req.cookies[COOKIE_NAME]) {
     let templateVars = {
       user: users.findUser(req.cookies[COOKIE_NAME]),
-      urls: urlDatabase
+      urls: urlDB.getURLS(req.cookies[COOKIE_NAME])
     };
+
     res.render('urls-home', templateVars);
   } else {
     res.redirect('/register');
@@ -81,7 +84,14 @@ app.get('/urls', (req, res) => {
 app.post('/urls', (req, res) => {
   if (req.body.longURL) {
     let key = shortener();
-    urlDatabase[key] = req.body.longURL;
+    let user = users.findUser(req.cookies[COOKIE_NAME]);
+
+    urlDB.add(key, user.id, req.body.longURL);
+    console.log(urlDB.debug);
+    // console.log(urlDB.getURLS(user.id));
+    // users.addUrl(user, key, req.body.longURL);
+    // console.log(user);
+    // console.log(users.getUsers);
     // console.log(urlDatabase);
   }
 
