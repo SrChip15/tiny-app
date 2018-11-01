@@ -53,24 +53,32 @@ app.post('/logout', (req, res) => {
   res.redirect('/login');
 });
 
-// append short URL to print the long URL on screen
+// single URL view page {GET}
 app.get('/urls/:id', (req, res) => {
-  let templateVars = {
-    shortUrl: req.params.id,
-    longURL: finder.longUrl(req.params.id, urlDatabase)
-  };
-  res.render('urls-show', templateVars);
+  let url = finder.longUrl(req.params.id, urlDatabase);
+
+  if (url) {
+    // id exists
+    let templateVars = {
+      shortUrl: req.params.id,
+      longURL: url
+    };
+
+    res.render('urls-show', templateVars);
+  } else {
+    res.status(400).send("ID does not exist");
+  }
+
 });
 
+//  update endpoint {POST}
 app.post('/urls/:id', (req, res) => {
-  let url = finder.longUrl(req.params.id, urlDatabase);
   // Add UPDATED value to DB
-  urlDatabase[req.params.id] = url;
+  urlDatabase[req.params.id] = req.body.longURL;
   res.redirect('/urls');
 });
 
 app.post('/urls/:id/delete', (req, res) => {
-  // console.log(req.params.id);
   delete urlDatabase[req.params.id];
   res.redirect('/urls');
 });
