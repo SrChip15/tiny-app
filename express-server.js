@@ -53,14 +53,20 @@ app.post('/logout', (req, res) => {
   res.redirect('/login');
 });
 
+// append short URL to print the long URL on screen
+app.get('/urls/:id', (req, res) => {
+  let templateVars = {
+    shortUrl: req.params.id,
+    longURL: finder.longUrl(req.params.id, urlDatabase)
+  };
+  res.render('urls-show', templateVars);
+});
+
 app.post('/urls/:id', (req, res) => {
   let url = finder.longUrl(req.params.id, urlDatabase);
-  console.log(`${req.params.id} -> ${url}`);
-  let updateTemplateVars = {
-    shortUrl: req.params.id,
-    longUrl: url
-  };
-  res.render('urls-update', updateTemplateVars);
+  // Add UPDATED value to DB
+  urlDatabase[req.params.id] = url;
+  res.redirect('/urls');
 });
 
 app.post('/urls/:id/update', (req, res) => {

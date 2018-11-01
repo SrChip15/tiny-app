@@ -49,13 +49,13 @@
       <% for (let el in urls) { %>
       <tr>
         <td>
-          <%= el %>
+          <a href="/urls/<%= el %>"><%= el %></a>
         </td>
         <td>
           <%= urls[el] %>
         </td>
         <td>
-            <form id="form-edit" method="POST" action="/urls/<%= el %>">
+            <form id="form-edit" method="GET" action="/urls/<%= el %>">
               <input id="edit" type="submit" value="Edit">
             </form>
           </td>
