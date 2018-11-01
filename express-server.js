@@ -87,23 +87,32 @@ app.post('/logout', (req, res) => {
   res.redirect('/register');
 });
 
-app.post('/urls/:id', (req, res) => {
+// single URL view page {GET}
+app.get('/urls/:id', (req, res) => {
   let url = finder.longUrl(req.params.id, urlDatabase);
-  console.log(`${req.params.id} -> ${url}`);
-  let updateTemplateVars = {
-    shortUrl: req.params.id,
-    longUrl: url
-  };
-  res.render('urls-update', updateTemplateVars);
+
+  if (url) {
+    // id exists
+    let templateVars = {
+      shortUrl: req.params.id,
+      longURL: url
+    };
+
+    res.render('urls-show', templateVars);
+  } else {
+    res.status(400).send("ID does not exist");
+  }
+
 });
 
-app.post('/urls/:id/update', (req, res) => {
+//  update endpoint {POST}
+app.post('/urls/:id', (req, res) => {
+  // Add UPDATED value to DB
   urlDatabase[req.params.id] = req.body.longURL;
   res.redirect('/urls');
 });
 
 app.post('/urls/:id/delete', (req, res) => {
-  // console.log(req.params.id);
   delete urlDatabase[req.params.id];
   res.redirect('/urls');
 });

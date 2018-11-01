@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<style>
+  h2 {
+    margin-top: 50px;
+    text-align: center;
+  }
+
+  form {
+    text-align: center;
+  }
+</style>
+
 <head>
   <title>TinyApp</title>
 </head>
@@ -8,13 +19,15 @@
 <body>
   <% include ./partials/_header %>
 
-  <% for (let url in data) { %>
-  <% if (shortUrl == url) { %>
-  <p>
-    <%= data[url]  %>
-  </p>
-  <% } %>
-  <% } %>
+  <h2>Short Url:
+    <%= shortUrl %>
+  </h2>
+
+  <form method="POST" action="/urls/<%= shortUrl %>">
+    <input name="longURL" type="text" value="<%= longURL  %>" />
+    <input type="submit" value="Update" />
+  </form>
+
 </body>
 
 </html>
