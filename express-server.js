@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const shortener = require('./shortener');
 const finder = require('./finder');
 const PORT = 3030;
-const COOKIE_NAME = 'username';
+const COOKIE_NAME = 'user_id';
 
 let urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -16,9 +16,37 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
+app.get('/register', (req, res) => {
+  if (req.cookies[COOKIE_NAME]) {
+    // already registered for session
+    res.redirect('/urls');
+  } else {
+    res.render('urls-register');
+  }
+});
+
+app.post('/register', (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    res.status(400).send("Email or Password field cannot be empty");
+  }
+
+  else if (users.isNew(req.body.password)) {
+    // already registered user, render
+    res.status(400);
+    res.redirect('/login');
+  }
+
+  else {
+    let randomId = shortener();
+    users.add(randomId, req.body.email, req.body.password);
+    res.cookie(COOKIE_NAME, randomId);
+    res.redirect('/urls');
+  }
+});
+
 // login submit button takes this route
 app.get('/login', (req, res) => {
-  res.render('urls-login');
+  res.render('urls-home');
 });
 
 app.post('/login', (req, res) => {

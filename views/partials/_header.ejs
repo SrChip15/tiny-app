@@ -33,8 +33,20 @@
   <div class="container">
     <div class="flexbox">
       <div id="head-left">Tiny App</div>
-      <div id="head-right">About</div>
+      <!-- <div id="head-right">About</div> -->
     </div>
+  </div>
+
+  <div class="form">
+    <% if (!email && !password) { %>
+    <form method="POST" action="/login">
+      <input type="email" name="email" placeholder="email">
+      <input type="password" name="password" placeholder="password">
+      <input type="submit" value="Login">
+    <% } else { %>
+    <% <input type="submit" value="Logout" %>
+    <% } %>
+    </form>
   </div>
 
 </header>
