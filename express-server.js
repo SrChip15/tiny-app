@@ -27,11 +27,23 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  let randomId = shortener();
-  users.add(randomId, req.body.email, req.body.password);
-  res.cookie(COOKIE_NAME, randomId);
-  console.log(users.getUsers);
-  res.redirect('/urls');
+  if (!req.body.email || !req.body.password) {
+    res.status(400).send("Email or Password field cannot be empty");
+  }
+
+  else if (users.isNew(req.body.password)) {
+    res.status(400);
+    res.redirect('/login');
+  }
+
+  else {
+    let randomId = shortener();
+    users.add(randomId, req.body.email, req.body.password);
+    res.cookie(COOKIE_NAME, randomId);
+    // console.log(users.getUsers);
+    // console.log(req.body.password);
+    res.redirect('/urls');
+  }
 });
 
 // login submit button takes this route
@@ -72,7 +84,7 @@ app.post('/urls', (req, res) => {
 app.post('/logout', (req, res) => {
   res.clearCookie(COOKIE_NAME);
   urlDatabase = {}; // dump user data
-  res.redirect('/login');
+  res.redirect('/register');
 });
 
 app.post('/urls/:id', (req, res) => {

@@ -17,9 +17,22 @@ const addUser = function(id, email, password) {
     'email': email,
     'password': password
   };
+  // console.log(users);
+};
+
+const checkIfExisting = function(password) {
+  for (let user in users) {
+    let person = users[user];
+    if (person.password === password) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 module.exports = {
   getUsers: users,
-  add: addUser
+  add: addUser,
+  isNew: checkIfExisting
 };
