@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
+let cookieSession = require('cookie-session');
 const shortener = require('./shortener');
 const users = require('./models/users');
 const urlDB = require('./models/urls');
@@ -13,10 +13,13 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: [COOKIE_NAME]
+}));
 
 app.get('/register', (req, res) => {
-  if (req.cookies[COOKIE_NAME]) {
+  if (req.session[COOKIE_NAME]) {
     // already registered for session
     res.redirect('/urls');
   } else {
@@ -35,7 +38,7 @@ app.post('/register', (req, res) => {
   } else {
     let randomId = shortener();
     users.add(randomId, req.body.email, bcrypt.hashSync(req.body.password, 10));
-    res.cookie(COOKIE_NAME, randomId);
+    req.session[COOKIE_NAME] = randomId;
     res.redirect('/urls');
   }
 });
@@ -54,21 +57,20 @@ app.post('/login', (req, res) => {
   let user = users.verify(req.body.email, req.body.password);
 
   if (user) {
-    res.cookie(COOKIE_NAME, user.id);
+    req.session[COOKIE_NAME] =  user.id;
     res.redirect('/urls');
   } else {
     // new user
     res.redirect('/register');
   }
-
 });
 
 // home page request
 app.get('/urls', (req, res) => {
-  if (req.cookies[COOKIE_NAME]) {
+  if (req.session[COOKIE_NAME]) {
     let templateVars = {
-      user: users.findUser(req.cookies[COOKIE_NAME]),
-      urls: urlDB.getURLS(req.cookies[COOKIE_NAME])
+      user: users.findUser(req.session[COOKIE_NAME]),
+      urls: urlDB.getURLS(req.session[COOKIE_NAME])
     };
 
     res.render('urls-home', templateVars);
@@ -81,7 +83,7 @@ app.get('/urls', (req, res) => {
 app.post('/urls', (req, res) => {
   if (req.body.longURL) {
     let key = shortener();
-    let user = users.findUser(req.cookies[COOKIE_NAME]);
+    let user = users.findUser(req.session[COOKIE_NAME]);
     urlDB.add(key, user.id, req.body.longURL);
   }
 
@@ -90,15 +92,16 @@ app.post('/urls', (req, res) => {
 });
 
 app.post('/logout', (req, res) => {
-  res.clearCookie(COOKIE_NAME);
+  // res.clearCookie(COOKIE_NAME);
+  req.session = null;
   res.redirect('/login');
 });
 
 // single URL view page {GET}
 app.get('/urls/:id', (req, res) => {
   // display only short and long URLs associated with the current user
-  let user = users.findUser(req.cookies[COOKIE_NAME]);
-  let url = urlDB.userLong(req.cookies[COOKIE_NAME], req.params.id);
+  let user = users.findUser(req.session[COOKIE_NAME]);
+  let url = urlDB.userLong(req.session[COOKIE_NAME], req.params.id);
 
   if (user) {
     // logged-in instance
@@ -128,8 +131,8 @@ app.get('/urls/:id', (req, res) => {
 //  update endpoint {POST}
 app.post('/urls/:id', (req, res) => {
   // Add UPDATED value to DB
-  let user = users.findUser(req.cookies[COOKIE_NAME]);
-  let url = urlDB.userLong(req.cookies[COOKIE_NAME], req.params.id);
+  let user = users.findUser(req.session[COOKIE_NAME]);
+  let url = urlDB.userLong(req.session[COOKIE_NAME], req.params.id);
 
   if (user && url) {
     urlDB.add(req.params.id, user.id, req.body.longURL);
@@ -143,10 +146,10 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.post('/urls/:id/delete', (req, res) => {
-  let user = users.findUser(req.cookies[COOKIE_NAME]);
+  let user = users.findUser(req.session[COOKIE_NAME]);
 
   if (user) {
-    if (urlDB.userLong(req.cookies[COOKIE_NAME], req.params.id, false)) {
+    if (urlDB.userLong(req.session[COOKIE_NAME], req.params.id, false)) {
       res.redirect('/urls');
     } else {
       // current user does not have this short URL in her/his context
