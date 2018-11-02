@@ -38,21 +38,26 @@ const findLong = function (shortURL) {
   return false;
 };
 
-const findUserLong = function(userID, shortURL) {
+const findOrDeleteUserLong = function (userID, shortURL, dryRun = true) {
   for (let short in urlsDB) {
     if (short === shortURL &&
       urlsDB[short].userID === userID) {
+      if (dryRun) {
         return urlsDB[short].longURL;
+      }
+
+      delete urlsDB[short];
+      return true;
     }
   }
 
   return false;
-}
+};
 
 module.exports = {
   add: addURL,
   getURLS: urls,
   debug: urlsDB,
   getLong: findLong,
-  getUserLong: findUserLong
+  getUserLong: findOrDeleteUserLong
 };

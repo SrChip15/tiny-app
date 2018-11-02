@@ -3,16 +3,10 @@ const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
 const shortener = require('./shortener');
-const finder = require('./finder');
 const users = require('./models/users');
 const urlDB = require('./models/urls');
 const PORT = 3030;
 const COOKIE_NAME = 'user_id';
-
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
@@ -86,13 +80,7 @@ app.post('/urls', (req, res) => {
   if (req.body.longURL) {
     let key = shortener();
     let user = users.findUser(req.cookies[COOKIE_NAME]);
-
     urlDB.add(key, user.id, req.body.longURL);
-    // console.log(urlDB.getURLS(user.id));
-    // users.addUrl(user, key, req.body.longURL);
-    // console.log(user);
-    // console.log(users.getUsers);
-    // console.log(urlDatabase);
   }
 
   res.redirect('/urls');
@@ -108,7 +96,7 @@ app.post('/logout', (req, res) => {
 app.get('/urls/:id', (req, res) => {
   // display only short and long URLs associated with the current user
   let user = users.findUser(req.cookies[COOKIE_NAME]);
-  let url = urlDB.getUserLong(req.cookies[COOKIE_NAME], req.params.id);
+  let url = urlDB.userLong(req.cookies[COOKIE_NAME], req.params.id);
 
   if (user) {
     // logged-in instance
@@ -138,10 +126,8 @@ app.get('/urls/:id', (req, res) => {
 //  update endpoint {POST}
 app.post('/urls/:id', (req, res) => {
   // Add UPDATED value to DB
-  // shortURL, userID, longURL
-  // urlDatabase[req.params.id] = req.body.longURL;
   let user = users.findUser(req.cookies[COOKIE_NAME]);
-  let url = urlDB.getUserLong(req.cookies[COOKIE_NAME], req.params.id);
+  let url = urlDB.userLong(req.cookies[COOKIE_NAME], req.params.id);
 
   if (user && url) {
     urlDB.add(req.params.id, user.id, req.body.longURL);
@@ -155,8 +141,23 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.post('/urls/:id/delete', (req, res) => {
-  delete urlDatabase[req.params.id];
-  res.redirect('/urls');
+  // delete urlDatabase[req.params.id];
+  let user = users.findUser(req.cookies[COOKIE_NAME]);
+
+  if (user) {
+    if (urlDB.userLong(req.cookies[COOKIE_NAME], req.params.id, false)) {
+      res.redirect('/urls');
+    } else {
+      // current user does not have this short URL in her/his context
+      res.status(402);
+      res.redirect('/urls');
+    }
+
+  } else {
+    // not a registered/logged-in user, YOU SHALL NOT PASS
+    res.status(402);
+    res.redirect('/login');
+  }
 });
 
 // redirects short URL to its corresponding long url
