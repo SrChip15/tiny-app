@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const shortener = require('./shortener');
 const users = require('./models/users');
 const urlDB = require('./models/urls');
+const bcrypt = require('bcrypt');
 const PORT = 3030;
 const COOKIE_NAME = 'user_id';
 
@@ -33,7 +34,10 @@ app.post('/register', (req, res) => {
 
   } else {
     let randomId = shortener();
-    users.add(randomId, req.body.email, req.body.password);
+    // users.add(randomId, req.body.email, req.body.password);
+    users.add(randomId, req.body.email, bcrypt.hashSync(req.body.password, 10));
+
+    console.log(users.getUsers());
     res.cookie(COOKIE_NAME, randomId);
     res.redirect('/urls');
   }
@@ -49,8 +53,9 @@ app.post('/login', (req, res) => {
     res.status(400).send("Email or Password field cannot be empty");
   }
 
-  let user = users.verify(req.body.email, req.body.password);
   // verify credentials
+  let user = users.verify(req.body.email, req.body.password);
+
   if (user) {
     res.cookie(COOKIE_NAME, user.id);
     res.redirect('/urls');

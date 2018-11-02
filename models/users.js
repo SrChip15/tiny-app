@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 const users = {
   "1a97hg": {
     id: "1a97hg",
@@ -10,6 +11,15 @@ const users = {
     email: "user2@example.com",
     password: "dishwasher-funk"
   }
+};
+
+const getDatabaseState = function () {
+  let output = [];
+  for (let user in users) {
+    output.push(users[user]);
+  }
+
+  return output;
 };
 
 const addUser = function (id, email, password) {
@@ -44,7 +54,8 @@ const find = function (userID) {
 
 const verifyCredentials = function (email, password) {
   for (let user in users) {
-    if (users[user].email === email && users[user].password === password) {
+    if (users[user].email === email &&
+      bcrypt.compareSync(password, users[user].password)) {
       return users[user];
     }
   }
@@ -54,7 +65,7 @@ const verifyCredentials = function (email, password) {
 
 
 module.exports = {
-  getUsers: users,
+  getUsers: getDatabaseState,
   add: addUser,
   exists: checkIfExisting,
   findUser: find,
