@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
+const methodOverride = require('method-override');
 const shortener = require('./shortener');
 const users = require('./models/users');
 const urlDB = require('./models/urls');
@@ -17,6 +18,7 @@ app.use(cookieSession({
   name: 'session',
   keys: [COOKIE_NAME]
 }));
+app.use(methodOverride('_method'));
 
 app.get('/register', (req, res) => {
   if (req.session[COOKIE_NAME]) {
@@ -145,7 +147,7 @@ app.post('/urls/:id', (req, res) => {
   }
 });
 
-app.post('/urls/:id/delete', (req, res) => {
+app.delete('/urls/:id', (req, res) => {
   let user = users.findUser(req.session[COOKIE_NAME]);
 
   if (user) {
