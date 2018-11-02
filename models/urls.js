@@ -28,8 +28,19 @@ const addURL = function (shortURL, userID, longURL) {
   };
 };
 
+const findLong = function (shortURL) {
+  for (let short in urlsDB) {
+    if (short === shortURL) {
+      return urlsDB[short].longURL;
+    }
+  }
+
+  return false;
+};
+
 module.exports = {
   add: addURL,
   getURLS: urls,
-  debug: urlsDB
+  debug: urlsDB,
+  getLong: findLong
 };

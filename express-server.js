@@ -140,11 +140,11 @@ app.post('/urls/:id/delete', (req, res) => {
 app.get('/u/:shortUrl', (req, res) => {
   if (req.params.shortUrl) {
     // redirect only when a non-empty short url is supplied
-    let longUrl = finder.longUrl(req.params.shortUrl, urlDatabase);
+    let longUrl = urlDB.getLong(req.params.shortUrl);
 
     if (longUrl) {
       //  permanent redirect only when short url exists
-      res.redirect(301, longUrl);
+      res.redirect(302, longUrl);
     }
   }
 });
