@@ -189,34 +189,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
-/* // main page - enter long url
-app.get('/urls/new', (req, res) => {
-  res.render('urls-home');
-}); */
-
-/* // append short URL to print the long URL on screen
-app.get('/urls/:id', (req, res) => {
-  let templateVars = {
-    shortUrl: req.params.id,
-    data: urlDatabase
-  };
-  res.render('urls-show', templateVars);
-}); */
-
-/* EXAMPLE STUFF
-
-/* app.get('/', (req, res) => {
-  res.send("Hello!");
-});
-
-// prints the URL as a JSON object on screen
-app.get('/urls.json', (req, res) => {
-  res.json(urlDatabase);
-});
-
-// example literal HTML response
-app.get('/hello', (req, res) => {
-  res.send("<html><body>Hello <b>World</b></body></html>\n");
-});
-*/
