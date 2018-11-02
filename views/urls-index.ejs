@@ -34,6 +34,22 @@
     background-color: crimson;
     transition: all 0.25s linear;
   }
+
+  #edit {
+    width: 100%;
+    padding: 20px;
+    height: 100%;
+    border: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: green;
+  }
+
+  #edit:hover {
+    color: white;
+    background-color:green;
+    transition: all 0.25s linear;
+  }
 </style>
 
 <head>
@@ -45,21 +61,21 @@
   <table>
     <tbody>
 
-      <% for (let el in urls) { %>
+      <% for (let url in urls) { %>
       <tr>
         <td>
-          <a href="/urls/<%= el %>"><%= el %></a>
+          <a href="/urls/<%= url %>"><%= url %></a>
         </td>
         <td>
-          <%= urls[el] %>
+          <%= urls[url] %>
         </td>
         <td>
-            <form id="form-edit" method="GET" action="/urls/<%= el %>">
-              <input id="edit" type="submit" value="Edit">
-            </form>
-          </td>
+          <form id="form-edit" method="GET" action="/urls/<%= url %>">
+            <input id="edit" type="submit" value="Edit">
+          </form>
+        </td>
         <td>
-          <form id="form-delete" method="POST" action="/urls/<%= el %>/delete">
+          <form id="form-delete" method="POST" action="/urls/<%= url %>/delete">
             <input id="delete" type="submit" value="Delete">
           </form>
         </td>
