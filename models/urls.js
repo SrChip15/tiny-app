@@ -38,9 +38,21 @@ const findLong = function (shortURL) {
   return false;
 };
 
+const findUserLong = function(userID, shortURL) {
+  for (let short in urlsDB) {
+    if (short === shortURL &&
+      urlsDB[short].userID === userID) {
+        return urlsDB[short].longURL;
+    }
+  }
+
+  return false;
+}
+
 module.exports = {
   add: addURL,
   getURLS: urls,
   debug: urlsDB,
-  getLong: findLong
+  getLong: findLong,
+  getUserLong: findUserLong
 };

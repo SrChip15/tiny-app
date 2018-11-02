@@ -88,7 +88,6 @@ app.post('/urls', (req, res) => {
     let user = users.findUser(req.cookies[COOKIE_NAME]);
 
     urlDB.add(key, user.id, req.body.longURL);
-    console.log(urlDB.debug);
     // console.log(urlDB.getURLS(user.id));
     // users.addUrl(user, key, req.body.longURL);
     // console.log(user);
@@ -107,19 +106,31 @@ app.post('/logout', (req, res) => {
 
 // single URL view page {GET}
 app.get('/urls/:id', (req, res) => {
-  let url = finder.longUrl(req.params.id, urlDatabase);
+  // display only short and long URLs associated with the current user
+  let user = users.findUser(req.cookies[COOKIE_NAME]);
+  let url = urlDB.getUserLong(req.cookies[COOKIE_NAME], req.params.id);
 
-  if (url) {
-    // id exists
-    let templateVars = {
-      username: req.cookies[COOKIE_NAME],
-      shortUrl: req.params.id,
-      longURL: url
-    };
-    res.render('urls-show', templateVars);
+  if (user) {
+    // logged-in instance
+    if (url) {
+      let templateVars = {
+        user: user, // if need be
+        shortURL: req.params.id,
+        longURL: url
+
+      };
+
+      res.render('urls-show', templateVars);
+
+    } else {
+      // current user does not have this short URL in her/his context
+      res.status(400).send("ID does not exist");
+    }
 
   } else {
-    res.status(400).send("ID does not exist");
+    // force register/login
+    res.status(402);
+    res.redirect('/login');
   }
 
 });
@@ -127,8 +138,20 @@ app.get('/urls/:id', (req, res) => {
 //  update endpoint {POST}
 app.post('/urls/:id', (req, res) => {
   // Add UPDATED value to DB
-  urlDatabase[req.params.id] = req.body.longURL;
-  res.redirect('/urls');
+  // shortURL, userID, longURL
+  // urlDatabase[req.params.id] = req.body.longURL;
+  let user = users.findUser(req.cookies[COOKIE_NAME]);
+  let url = urlDB.getUserLong(req.cookies[COOKIE_NAME], req.params.id);
+
+  if (user && url) {
+    urlDB.add(req.params.id, user.id, req.body.longURL);
+    res.redirect('/urls');
+
+  } else {
+    // not a registered user/logged-in user; redirect to register/login
+    res.status(400);
+    res.redirect('/login');
+  }
 });
 
 app.post('/urls/:id/delete', (req, res) => {
