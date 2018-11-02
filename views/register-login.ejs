@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<style>
+  form {
+    text-align: center;
+    margin-top: 150px;
+    margin-left: 50px;
+    margin-right: 50px;
+
+  }
+  #login {
+    width: 50px;
+    height: 25px;
+    border: none;
+    background-color: dodgerblue;
+    margin-top: 10px;
+    color: white;
+  }
+
+  input {
+    display: block;
+    margin: 10px auto;
+  }
+
+  a {
+    margin-top: 10px;
+    display: block;
+    text-align: center;
+  }
+
+</style>
+
+<body>
+  <% include partials/_header %>
+
+  <div>
+    <form method="POST" action="/login">
+      <input type="email" name="email" placeholder="email">
+      <input type="password" name="password" placeholder="password">
+      <input id="login" type="submit" value="Login">
+    </form>
+  </div>
+  <a href="/register">Don't have an account? Register</a>
+</body>
+
+</html>

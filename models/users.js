@@ -56,7 +56,7 @@ const verifyCredentials = function (email, password) {
 module.exports = {
   getUsers: users,
   add: addUser,
-  isNew: checkIfExisting,
+  exists: checkIfExisting,
   findUser: find,
   verify: verifyCredentials
 };

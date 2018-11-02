@@ -32,14 +32,11 @@ app.get('/register', (req, res) => {
 app.post('/register', (req, res) => {
   if (!req.body.email || !req.body.password) {
     res.status(400).send("Email or Password field cannot be empty");
-  } else if (users.isNew(req.body.password)) {
-    // already registered user, render
+
+  } else if (users.exists(req.body.email)) {
     res.status(400);
-    let templateVars = {
-      username: req.cookies[COOKIE_NAME],
-      urls: urlDatabase
-    };
-    res.render('urls-home', templateVars);
+    res.redirect('/login');
+
   } else {
     let randomId = shortener();
     users.add(randomId, req.body.email, req.body.password);
@@ -50,20 +47,24 @@ app.post('/register', (req, res) => {
 
 // login submit button takes this route
 app.get('/login', (req, res) => {
-  res.render('urls-login');
+  res.render('register-login');
 });
 
 app.post('/login', (req, res) => {
   if (!req.body.email || !req.body.password) {
     res.status(400).send("Email or Password field cannot be empty");
-  } else {
-    // verify credentials
-    let user = users.verify(req.body.email, req.body.password);
-    if (user) {
-      res.cookie(COOKIE_NAME, user.id);
-      res.redirect('/urls');
-    }
   }
+
+  let user = users.verify(req.body.email, req.body.password);
+  // verify credentials
+  if (user) {
+    res.cookie(COOKIE_NAME, user.id);
+    res.redirect('/urls');
+  } else {
+    // new user
+    res.redirect('/register');
+  }
+
 });
 
 // home page request
@@ -101,7 +102,7 @@ app.post('/urls', (req, res) => {
 
 app.post('/logout', (req, res) => {
   res.clearCookie(COOKIE_NAME);
-  res.redirect('/register');
+  res.redirect('/login');
 });
 
 // single URL view page {GET}
