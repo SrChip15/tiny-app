@@ -75,7 +75,7 @@
           </form>
         </td>
         <td>
-          <form id="form-delete" method="POST" action="/urls/<%= url %>/delete">
+          <form id="form-delete" action="/urls/<%= url %>/?_method=DELETE" method="POST">
             <input id="delete" type="submit" value="Delete">
           </form>
         </td>
