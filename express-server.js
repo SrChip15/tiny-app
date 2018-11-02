@@ -34,10 +34,7 @@ app.post('/register', (req, res) => {
 
   } else {
     let randomId = shortener();
-    // users.add(randomId, req.body.email, req.body.password);
     users.add(randomId, req.body.email, bcrypt.hashSync(req.body.password, 10));
-
-    console.log(users.getUsers());
     res.cookie(COOKIE_NAME, randomId);
     res.redirect('/urls');
   }
@@ -146,7 +143,6 @@ app.post('/urls/:id', (req, res) => {
 });
 
 app.post('/urls/:id/delete', (req, res) => {
-  // delete urlDatabase[req.params.id];
   let user = users.findUser(req.cookies[COOKIE_NAME]);
 
   if (user) {

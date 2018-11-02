@@ -59,5 +59,5 @@ module.exports = {
   getURLS: urls,
   debug: urlsDB,
   getLong: findLong,
-  getUserLong: findOrDeleteUserLong
+  userLong: findOrDeleteUserLong
 };
