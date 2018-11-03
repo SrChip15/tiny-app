@@ -54,10 +54,37 @@ const findOrDeleteUserLong = function (userID, shortURL, dryRun = true) {
   return false;
 };
 
+const visitsLogger = function (shortURL, visitorID) {
+  for (let short in urlsDB) {
+    if (short === shortURL) {
+      let today = new Date();
+      let time = `${today.getDate()}-${today.getMonth()}-${today.getFullYear()} ${today.getHours()}:${today.getMinutes()} `;
+
+      if (urlsDB[short].visits) {
+        urlsDB[short].visits.count += 1;
+        urlsDB[short].visits.timestamp.push(time);
+
+      } else {
+        urlsDB[short].visits = {
+          timestamp: Array.of(time),
+          visitor_id: visitorID,
+          unique: 1,
+          count: 1,
+        };
+      }
+    }
+    console.log(urlsDB);
+    console.log(urlsDB[short].visits.timestamp);
+    return true;
+  }
+  return false;
+};
+
 module.exports = {
   add: addURL,
   getURLS: urls,
   debug: urlsDB,
   getLong: findLong,
-  userLong: findOrDeleteUserLong
+  userLong: findOrDeleteUserLong,
+  logger: visitsLogger
 };

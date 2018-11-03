@@ -9,6 +9,7 @@ const urlDB = require('./models/urls');
 const bcrypt = require('bcrypt');
 const PORT = 3030;
 const COOKIE_NAME = 'user_id';
+const VISITOR_ID = 'visitor_id';
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({
@@ -59,7 +60,7 @@ app.post('/login', (req, res) => {
   let user = users.verify(req.body.email, req.body.password);
 
   if (user) {
-    req.session[COOKIE_NAME] =  user.id;
+    req.session[COOKIE_NAME] = user.id;
     res.redirect('/urls');
   } else {
     // new user
@@ -173,9 +174,22 @@ app.get('/u/:shortUrl', (req, res) => {
     let longUrl = urlDB.getLong(req.params.shortUrl);
 
     if (longUrl) {
-      //  permanent redirect only when short url exists
+      // ANALYTICS
+      if (req.session[VISITOR_ID]) {
+        // this confirms that the current request is not unique
+        urlDB.logger(req.params.shortUrl, req.session[VISITOR_ID]);
+      } else {
+        let visitorID = shortener();
+        req.session[VISITOR_ID] = visitorID;
+        urlDB.logger(req.params.shortUrl, visitorID);
+      }
+
       res.redirect(302, longUrl);
     }
+
+  } else {
+    // don't remember shortening an URL with this shortURL
+    res.status(400).send("Invalid/Unrecognized shortened URL detected.");
   }
 });
 
