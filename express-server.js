@@ -105,6 +105,8 @@ app.get('/urls/:id', (req, res) => {
   // display only short and long URLs associated with the current user
   let user = users.findUser(req.session[COOKIE_NAME]);
   let url = urlDB.userLong(req.session[COOKIE_NAME], req.params.id);
+  let visits = urlDB.getVisits(req.params.id);
+  console.log(visits);
 
   if (user) {
     // logged-in instance
@@ -112,8 +114,8 @@ app.get('/urls/:id', (req, res) => {
       let templateVars = {
         user: user, // if need be
         shortURL: req.params.id,
-        longURL: url
-
+        longURL: url,
+        analytics: visits,
       };
 
       res.render('urls-show', templateVars);

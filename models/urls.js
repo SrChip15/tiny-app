@@ -73,10 +73,19 @@ const visitsLogger = function (shortURL, visitorID) {
         };
       }
     }
-    console.log(urlsDB);
-    console.log(urlsDB[short].visits.timestamp);
+
     return true;
   }
+  return false;
+};
+
+const urlInfo = function (shortURL) {
+  for (let short in urlsDB) {
+    if (short === shortURL) {
+      return urlsDB[short].visits;
+    }
+  }
+
   return false;
 };
 
@@ -86,5 +95,6 @@ module.exports = {
   debug: urlsDB,
   getLong: findLong,
   userLong: findOrDeleteUserLong,
-  logger: visitsLogger
+  logger: visitsLogger,
+  getVisits: urlInfo,
 };

@@ -10,6 +10,16 @@
   form {
     text-align: center;
   }
+
+  table {
+    margin: 0 auto;
+  }
+
+  th {
+    width: 50%;
+    padding: 10px;
+    margin: 20px;
+  }
 </style>
 
 <head>
@@ -27,6 +37,21 @@
     <input name="longURL" type="text" value="<%= longURL  %>" />
     <input type="submit" value="Update" />
   </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Total</th>
+        <th>Unique</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><%= analytics.count %></td>
+        <td><%= analytics.unique %></td>
+      </tr>
+    </tbody>
+  </table>
 
 </body>
 
