@@ -9,4 +9,6 @@ A full stack web app built with [Node](https://nodejs.org/en/) and [Express](htt
     - cookie-session
     - bcrypt
 
----
+## Screenshots
+![Landing Page](https://github.com/SrChip15/tiny-app/blob/master/docs/main.png)
+![Shortened URLs](https://github.com/SrChip15/tiny-app/blob/master/docs/urls.png)
