@@ -11,13 +11,17 @@ const PORT = 3030;
 const COOKIE_NAME = 'user_id';
 
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
+
 app.use(bodyParser.urlencoded({
   extended: true
 }));
+
 app.use(cookieSession({
   name: 'session',
   keys: [COOKIE_NAME]
 }));
+
 app.use(methodOverride('_method'));
 
 app.get('/register', (req, res) => {

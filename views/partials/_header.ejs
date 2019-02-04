@@ -1,50 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<style>
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  .container {
-    background-color: black
-  }
-
-  .flexbox {
-    width: 80%;
-    display: flex;
-    justify-content: space-between;
-    margin: 0 auto;
-    letter-spacing: 1px;
-    padding: 1% 0;
-  }
-
-  .flexbox div {
-    font-weight: 700;
-    color: white;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    font-size: 1.5rem;
-  }
-
-  #logout {
-    border: none;
-    padding: 20px;
-    text-transform: uppercase;
-    font-weight: 500;
-  }
-
-</style>
 
 <head>
-  <title>TinyApp</title>
+  <title>Funly</title>
+  <link href="/css/style.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Monoton|Niconne|Pacifico" rel="stylesheet">
 </head>
 
 <header>
   <div class="container">
     <div class="flexbox">
-      <div id="head-left">Tiny App</div>
+      <div id="head-left">Funly</div>
+      <div>
+        <nav class="navigation">
+          <ul>
+            <li>
+              <form>
+                <input type="text" placeholder="username">
+                <input type="password" placeholder="password">
+                <input id="submit" type="submit" value="login">
+              </form>
+              <!-- <a href="#">Login</a> -->
+            </li>
+            <li><a href="#">SignUp</a></li>
+          </ul>
+        </nav>
+      </div>
     </div>
   </div>
 
